@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.1.1" use-changelog="false" max-obj-count="14"
+	 last-position="-180,15" last-zoom="0.9" scene-rect="-200,0,1770.8,1091.52"
+	 default-schema="public" default-owner="postgres"
+	 layers="Default layer,main,auth"
+	 active-layers="0,1,2"
+	 layer-name-colors="#000000,#000000,#000000"
+	 layer-rect-colors="#b4b4b4,#f5d309,#29dd19"
+	 show-layer-names="false" show-layer-rects="false">
+<role name="admindb"
+ createdb="true"
+ login="true">
+</role>
+
+<database name="new_database" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" name-color="#000000" sql-disabled="true">
+</schema>
+
+<tag name="d">
+	<style id="table-body" colors="#474f56,#474f56,#595e61"/>
+	<style id="table-ext-body" colors="#474f56,#474f56,#595e61"/>
+	<style id="table-name" colors="#000000"/>
+	<style id="table-schema-name" colors="#000000"/>
+	<style id="table-title" colors="#3275b0,#6ec0ff,#77cbff"/>
+	<style id="table-toggler-body" colors="#474f56,#474f56,#595e61"/>
+	<style id="table-toggler-btns" colors="#3275b0,#6ec0ff,#77cbff"/>
+</tag>
+<sequence name="presons_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<sequence name="organizations_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<sequence name="certificates_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<table name="persons_skills" layers="0,1" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="780" y="340"/>
+	<column name="person_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="skill_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="persons_skills_pk" type="pk-constr" table="public.persons_skills">
+		<columns names="person_id,skill_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="skills_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<sequence name="users_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<sequence name="refresh_tokens_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<sequence name="notifications_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<sequence name="permissions_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<sequence name="roles_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<sequence name="permission_levels_seq" cycle="false" start="1" increment="1" min-value="0" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="admindb"/>
+</sequence>
+
+<table name="roles_permissions_permission_levels" layers="0,1" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="-180" y="700"/>
+	<column name="role_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="permission_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="permission_level_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="roles_permissions_permission_levels_pk" type="pk-constr" table="public.roles_permissions_permission_levels">
+		<columns names="role_id,permission_id,permission_level_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="skills" layers="0,1" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="1160" y="340"/>
+	<column name="skill_id" not-null="true" sequence="public.skills_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="skills_pk" type="pk-constr" table="public.skills">
+		<columns names="skill_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="persons" layers="0,1" collapse-mode="2" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="280" y="260"/>
+	<column name="person_id" not-null="true" sequence="public.presons_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="first_name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="surname" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="salary_rub" not-null="true" default-value="0.00">
+		<type name="numeric" length="10" precision="2"/>
+	</column>
+	<column name="hobby">
+		<type name="text" length="0"/>
+	</column>
+	<column name="fk_organization_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="fk_certificate_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="persons_pk" type="pk-constr" table="public.persons">
+		<columns names="person_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="certificate_id_uq" type="uq-constr" table="public.persons">
+		<columns names="fk_certificate_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="roles" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="400" y="600"/>
+	<column name="role_id" not-null="true" sequence="public.roles_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="roles_pk" type="pk-constr" table="public.roles">
+		<columns names="role_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="roles_name_uq" type="uq-constr" table="public.roles">
+		<columns names="name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="permissions" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="380" y="740"/>
+	<column name="permission_id" not-null="true" sequence="public.permissions_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="uname" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="permissions_pk" type="pk-constr" table="public.permissions">
+		<columns names="permission_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="permissions_uname_uq" type="uq-constr" table="public.permissions">
+		<columns names="uname" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="permission_levels" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="360" y="900"/>
+	<column name="permission_level_id" not-null="true" sequence="public.permission_levels_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="permission_level" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="uname" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="permission_levels_pk" type="pk-constr" table="public.permission_levels">
+		<columns names="permission_level_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="permission_levels_permission_level_uq" type="uq-constr" table="public.permission_levels">
+		<columns names="permission_level" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="permission_levels_uname_uq" type="uq-constr" table="public.permission_levels">
+		<columns names="uname" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="users" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="760" y="660"/>
+	<column name="user_id" not-null="true" sequence="public.users_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="fk_role_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="login" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="password" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="users_login_uq" type="uq-constr" table="public.users">
+		<columns names="login" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="users_pk" type="pk-constr" table="public.users">
+		<columns names="user_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="notifications" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="940" y="60"/>
+	<column name="notification_id" not-null="true" sequence="public.notifications_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="person_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="count" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="person_id_uq" type="uq-constr" table="public.notifications">
+		<columns names="person_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="notifications_pk" type="pk-constr" table="public.notifications">
+		<columns names="notification_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="certificates" layers="0,1" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="40" y="60"/>
+	<column name="certificate_id" not-null="true" sequence="public.certificates_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="code" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="certificates_pk" type="pk-constr" table="public.certificates">
+		<columns names="certificate_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="organizations" layers="0,1" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="460" y="60"/>
+	<column name="organization_id" not-null="true" sequence="public.organizations_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="organizations_pk" type="pk-constr" table="public.organizations">
+		<columns names="organization_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="refresh_tokens" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="admindb"/>
+	<position x="1140" y="660"/>
+	<column name="refresh_token_id" not-null="true" sequence="public.refresh_tokens_seq">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="refresh_token" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="fk_user_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="user_id_uq" type="uq-constr" table="public.refresh_tokens">
+		<columns names="fk_user_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="refresh_tokens_pk" type="pk-constr" table="public.refresh_tokens">
+		<columns names="refresh_token_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="organization_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.organizations" table="public.persons">
+	<columns names="fk_organization_id" ref-type="src-columns"/>
+	<columns names="organization_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="certificate_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.certificates" table="public.persons">
+	<columns names="fk_certificate_id" ref-type="src-columns"/>
+	<columns names="certificate_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="person_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.persons" table="public.persons_skills">
+	<columns names="person_id" ref-type="src-columns"/>
+	<columns names="person_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="skill_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.skills" table="public.persons_skills">
+	<columns names="skill_id" ref-type="src-columns"/>
+	<columns names="skill_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="role_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.roles" table="public.users">
+	<columns names="fk_role_id" ref-type="src-columns"/>
+	<columns names="role_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="user_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.refresh_tokens">
+	<columns names="fk_user_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="role_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.roles" table="public.roles_permissions_permission_levels">
+	<columns names="role_id" ref-type="src-columns"/>
+	<columns names="role_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="permission_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.permissions" table="public.roles_permissions_permission_levels">
+	<columns names="permission_id" ref-type="src-columns"/>
+	<columns names="permission_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="permission_level_id_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.permission_levels" table="public.roles_permissions_permission_levels">
+	<columns names="permission_level_id" ref-type="src-columns"/>
+	<columns names="permission_level_id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_persons_certificates" type="relfk" layers="0"
+	 src-table="public.persons"
+	 dst-table="public.certificates" reference-fk="certificate_id_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_persons_skills_persons" type="relfk" layers="0"
+	 src-table="public.persons_skills"
+	 dst-table="public.persons" reference-fk="person_id_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_persons_skills_skills" type="relfk" layers="0"
+	 src-table="public.persons_skills"
+	 dst-table="public.skills" reference-fk="skill_id_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_persons_organizations" type="relfk" layers="0"
+	 src-table="public.persons"
+	 dst-table="public.organizations" reference-fk="organization_id_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_refresh_tokens_users" type="relfk" layers="0"
+	 src-table="public.refresh_tokens"
+	 dst-table="public.users" reference-fk="user_id_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_roles_permissions_permission_levels_roles" type="relfk" layers="0"
+	 src-table="public.roles_permissions_permission_levels"
+	 dst-table="public.roles" reference-fk="role_id_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_roles_permissions_permission_levels_permissions" type="relfk" layers="0"
+	 src-table="public.roles_permissions_permission_levels"
+	 dst-table="public.permissions" reference-fk="permission_id_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_roles_permissions_permission_levels_permission_levels" type="relfk" layers="0"
+	 src-table="public.roles_permissions_permission_levels"
+	 dst-table="public.permission_levels" reference-fk="permission_level_id_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_users_roles" type="relfk" layers="0"
+	 src-table="public.users"
+	 dst-table="public.roles" reference-fk="role_id_fk"
+	 src-required="false" dst-required="true"/>
+
+</dbmodel>

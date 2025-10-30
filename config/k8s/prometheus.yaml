@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-claim0
+  labels:
+    type: local
+    app: prometheus
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 150Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/prometheus"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-claim0
+  labels:
+    app: prometheus
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+#  namespace: default
+data:
+  prometheus.yml: |
+    scrape_configs:
+      - job_name: 'sample_monitoring'
+        scrape_interval: 15s
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ 'main-kotlin:5001', 'reader-kotlin:5012', 'writer-kotlin:5003' ]
+        basic_auth:
+          username: userAdmin
+          password: passwordAdmin
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  ports:
+    - port: 9090
+      targetPort: 9090
+      name: prometheus
+  selector:
+    app: prometheus
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: prometheus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus
+            - name: prometheus-claim0
+              mountPath: /prometheus
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-config
+        - name: prometheus-claim0
+          persistentVolumeClaim:
+            claimName: prometheus-claim0

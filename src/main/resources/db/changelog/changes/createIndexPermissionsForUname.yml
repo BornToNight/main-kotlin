@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: createIndexPermissionsForUname
+      author: BornToNight
+      changes:
+        - sqlFile:
+            path: db/sql/createIndexPermissionsForUname.sql

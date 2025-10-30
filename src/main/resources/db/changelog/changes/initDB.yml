@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: initDB
+      author: BornToNight
+      changes:
+        - sqlFile:
+            path: db/sql/initDB.sql

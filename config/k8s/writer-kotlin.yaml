@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: writer-kotlin
+spec:
+  selector:
+    app: writer-kotlin
+  ports:
+    - protocol: TCP
+      name: writer-kotlin
+      port: 5003
+      targetPort: 5003
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: writer-kotlin
+  labels:
+    app: writer-kotlin
+spec:
+  minReadySeconds: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 2
+  selector:
+    matchLabels:
+      app: writer-kotlin
+  template:
+    metadata:
+      labels:
+        app: writer-kotlin
+    spec:
+      containers:
+        - name: writer-kotlin
+          image: borntonight/writer-kotlin:1
+          ports:
+            - containerPort: 5003
+          env:
+            - name: SPRING_USER
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: SPRING_USER
+            - name: SPRING_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: SPRING_PASSWORD
+            - name: SPRING_ADMIN_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: SPRING_ADMIN_HOST
+            - name: SPRING_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: SPRING_ADMIN_USER
+            - name: SPRING_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: SPRING_ADMIN_PASSWORD
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: POSTGRES_HOST
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: POSTGRES_PASSWORD
+            - name: KAFKA_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: KAFKA_HOST
+            - name: KAFKA_TOPIC
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: KAFKA_TOPIC
+            - name: KAFKA_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: KAFKA_CLIENT_ID
+            - name: KAFKA_GROUP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: KAFKA_GROUP_ID
+            - name: LOGSTASH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: LOGSTASH_HOST

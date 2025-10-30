@@ -1,0 +1,219 @@
+application:
+  kafka:
+    topic: ${KAFKA_TOPIC}
+
+task:
+  schedule:
+    increase-count:
+      delay: ${TASK_INCREASE_COUNT_DELAY}
+      initialDelay: ${TASK_INCREASE_COUNT_INITIAL_DELAY}
+
+spring:
+  application:
+    name: main-kotlin
+  config:
+    import: optional:file:.env[.properties]
+  security:
+    user:
+      name: ${SPRING_USER}
+      password: ${SPRING_PASSWORD}
+  boot:
+    admin:
+      client:
+        url: http://${SPRING_ADMIN_HOST}:5004
+        # от server
+        username: ${SPRING_ADMIN_USER}
+        password: ${SPRING_ADMIN_PASSWORD}
+        instance:
+          prefer-ip: true
+          metadata:
+            # от server
+            user:
+              name: ${SPRING_ADMIN_USER}
+              password: ${SPRING_ADMIN_PASSWORD}
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_HOST}:9092
+      client-id: ${KAFKA_CLIENT_ID}
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      password: ${REDIS_PASSWORD} # EXPLAIN_V в BASE64
+      repositories:
+        enabled: false
+    web:
+      pageable:
+        default-page-size: 50
+        max-page-size: 50
+        one-indexed-parameters: true
+
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+      properties:
+        hibernate:
+          format_sql: true
+      enable_lazy_load_no_trans: true
+      event:
+        merge:
+          entity_copy_observer: allow
+    open-in-view: false # EXPLAIN_V Держать ли открытой транзакцию пока открыт HTTP запрос
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db-changelog.yml
+  docker:
+    compose:
+      enabled: false
+      skip:
+        in-test: false
+  cache:
+    type: redis
+    cache-names: redis-cache
+  graphql:
+    graphiql:
+      enabled: true
+
+server:
+  port: 5001
+  max-http-header-size: 100000
+
+# Настройка Actuator
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*" # EXPLAIN_V Открыть у актуатора больше запросов для метрик
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
+logging:
+  path: ${user.home}/logs/main
+  level:
+    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: TRACE
+
+openapi:
+  local-url: http://${SWAGGER_HOST}
+  dev-url: http://162.16.20.80:5001
+
+springdoc:
+  show-login-endpoint: true
+  api-docs:
+    enabled: true
+    path: /apiDocs
+  swagger-ui:
+    enabled: true
+    path: /swagger
+    filter: true
+    tryItOutEnabled: true
+    tagsSorter: alpha
+    docExpansion: none
+    defaultModelsExpandDepth: 10
+
+jwt:
+  key: ${JWT_KEY}
+  access-token-expiration: ${ACCESS_TOKEN_EXPIRATION}
+  refresh-token-expiration: ${REFRESH_TOKEN_EXPIRATION}
+
+grpc:
+  client:
+    GLOBAL:
+      negotiationType: PLAINTEXT
+    reader-server:
+      address: static://${GRPC_HOST}:5002
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        # EXPLAIN_V два возможных значения COUNT_BASED, TIME_BASED, по ум. COUNT_BASED
+        slidingWindowType: COUNT_BASED
+        # EXPLAIN_V размер sliding window, при COUNT_BASED - обозначает количество запросов, при TIME_BASED - количество секунд, по ум. 100
+        slidingWindowSize: 100
+        # EXPLAIN_V количество запросов, которые необходимо выполнить в HALF_OPEN состоянии, по ум. 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        # EXPLAIN_V время, по которому определяется что запрос является медленным, по ум. 60000 мс
+        slowCallDurationThreshold: 4s
+        # EXPLAIN_V порог медленных запросов (запрос считается медленным, если выполняется дольше, чем указано в настройке slowCallDurationThreshold), по ум. 100
+        slowCallRateThreshold: 90
+        # EXPLAIN_V порог невалидных запросов, по ум. 50%
+        failureRateThreshold: 50
+        # EXPLAIN_V время, в течение которого состояние остается OPEN, после чего переходит в HALF_OPEN, по ум. 60000 мс
+        waitDurationInOpenState: 10s
+        # EXPLAIN_V минимальное количество вызовов, по которым принимается решение о переключении состояния.
+        # Если тип скользящего окна TIME_BASED, то данное минимальное количество вызовов должно быть выполнено за указанный период в slidingWindowSize, по ум. 100
+        minimumNumberOfCalls: 3
+        # EXPLAIN_V список исключений, которые будут явно проигнорированы, при определении невалидных запросов. При выбросе данных исключений они не будут расценены ни как валидные, ни как невалидные, по ум. пустой
+        ignoreExceptions:
+          - ru.pachan.main_kotlin.exception.data.RequestException
+    instances:
+      writerCircuitBreaker:
+        baseConfig: default
+        waitDurationInOpenState: 20s
+      myCircuitBreaker2:
+        baseConfig: default
+        waitDurationInOpenState: 30s
+  retry:
+    configs:
+      default:
+        # EXPLAIN_V максимальное количество попыток, включая первый вызов, по ум. 3
+        maxAttempts: 3
+        # EXPLAIN_V фиксированное время между попытками, по ум. 500 мс
+        waitDuration: 100ms
+        # EXPLAIN_V список ошибок, по которым должен быть выполнены retry, по ум. пустой
+#        retryExceptions:
+        # EXPLAIN_V список исключений, которые будут явно проигнорированы, при определении невалидных запросов. При выбросе данных исключений они не будут расценены ни как валидные, ни как невалидные, по ум. пустой
+        ignoreExceptions:
+          - ru.pachan.main_kotlin.exception.data.RequestException
+    instances:
+      writerRetry:
+        baseConfig: default
+
+---
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+    activate:
+      on-profile: "prod"
+  jpa:
+    show-sql: false
+  liquibase:
+    enabled: true
+
+logging:
+  level:
+    root: WARN
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: INFO
+
+springdoc:
+  show-login-endpoint: false
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

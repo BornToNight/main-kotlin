@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: insertAdmin
+      author: BornToNight
+      changes:
+        - sqlFile:
+            path: db/sql/insertAdmin.sql

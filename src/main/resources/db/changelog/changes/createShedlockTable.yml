@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: createShedlockTable
+      author: BornToNight
+      changes:
+        - sqlFile:
+            path: db/sql/createShedlockTable.sql

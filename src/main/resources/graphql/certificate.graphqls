@@ -1,0 +1,18 @@
+type Query {
+    certificates: [Certificate]
+    certificate(id: ID!): Certificate!
+}
+
+type Mutation {
+    newCertificate(certificateGraphQlDto: CertificateGraphQlDto!): Certificate
+}
+
+input CertificateGraphQlDto {
+    code: String!
+}
+
+type Certificate {
+    id: ID!
+    code: String!
+    person: Person
+}

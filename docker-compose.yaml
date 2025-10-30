@@ -1,0 +1,141 @@
+volumes:
+  cache:
+    driver: local
+  grafana_storage: { }
+  prometheus: { }
+  elasticsearch:
+
+services:
+
+#  main-kotlin:
+#    build:
+#      context: .
+#    container_name: main-kotlin
+#    depends_on:
+#      - postgres
+#    env_file:
+#      - .env
+#    ports:
+#      - "5001:5001"
+
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+  grafana:
+    container_name: grafana
+    build: config/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_storage:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+    networks:
+      monitoring:
+        aliases:
+          - grafana
+
+  prometheus:
+    container_name: prometheus
+    build:
+      context: config/prometheus
+      args:
+        SPRING_USER: ${SPRING_USER}
+        SPRING_PASSWORD: ${SPRING_PASSWORD}
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus:/prometheus
+    networks:
+      monitoring:
+        aliases:
+          - prometheus
+
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:6.2.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    container_name: broker
+    image: confluentinc/cp-kafka:7.0.0
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  redis:
+    container_name: redis
+    image: redis:7.4-rc-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD} # EXPLAIN_V в BASE64
+    volumes:
+      - cache:/data
+
+  elasticsearch:
+    container_name: elasticsearch_spring
+    image: elasticsearch:8.15.0
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      discovery.type: single-node
+      node.name: elasticsearch
+      xpack.security.enabled: false
+    ports:
+      - "9200:9200"
+    networks:
+      - elk
+
+  kibana:
+    container_name: kibana_spring
+    image: kibana:8.15.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk
+
+  logstash:
+    container_name: logstash_spring
+    image: logstash:8.15.0
+    volumes:
+      - ./config/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./config/logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LOG_LEVEL: info
+      LS_JAVA_OPTS: -Xms256m -Xmx256m
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+networks:
+  elk:
+    driver: bridge
+  monitoring:

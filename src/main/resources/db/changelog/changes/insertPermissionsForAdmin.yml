@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: insertPermissionsForAdmin
+      author: BornToNight
+      changes:
+        - sqlFile:
+            path: db/sql/insertPermissionsForAdmin.sql

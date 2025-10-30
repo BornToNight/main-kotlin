@@ -1,0 +1,72 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+spec:
+  rules:
+    - host: pet.grafana
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
+    - host: pet.prometheus
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus
+                port:
+                  number: 9090
+    - host: pet.kibana
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kibana
+                port:
+                  number: 5601
+    - host: pet.admin
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-kotlin
+                port:
+                  number: 5004
+    - host: pet.main
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: main-kotlin
+                port:
+                  number: 5001
+#    - http:
+#        paths:
+#          - path: /api/main
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: main-kotlin
+#                port:
+#                  number: 5001
+#          - path: /api/auth
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: main-kotlin
+#                port:
+#                  number: 5001
