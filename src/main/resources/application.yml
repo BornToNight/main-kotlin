@@ -106,7 +106,6 @@ management:
 logging:
   path: ${user.home}/logs/main
   level:
-    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR
     org:
       hibernate:
         orm:
