@@ -3,3 +3,9 @@ databaseChangeLog:
       file: db/changelog/v1/1.yml
   - include:
       file: db/changelog/v1/2.yml
+  - changeSet:
+      id: tag-1.0.0
+      author: isakovskiivd
+      changes:
+        - tagDatabase:
+            tag: 1.0.0
