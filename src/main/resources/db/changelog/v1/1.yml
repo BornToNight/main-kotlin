@@ -1,7 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: 1
-      author: BornToNight
-      changes:
-        - sqlFile:
-            path: db/changelog/v1/1.sql

@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: BornToNight
+      changes:
+        - sqlFile:
+            path: db/changelog/1.0.0/1-1.sql
+      rollback:
+        - sqlFile:
+            path: db/changelog/1.0.0/1-1-rollback.sql
