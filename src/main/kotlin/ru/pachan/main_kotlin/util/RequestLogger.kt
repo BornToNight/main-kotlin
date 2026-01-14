@@ -13,7 +13,7 @@ import java.util.*
 
 object RequestLogger {
 
-    private const val MAX_BODY_LENGTH = 10 * 1024 // 10 KB
+    private const val MAX_BODY_LENGTH_KB = 10 * 1024 // 10 KB
     private val log = LoggerFactory.getLogger(RequestLogger::class.java)
 
     fun writeSlf4jLog(
@@ -97,7 +97,7 @@ object RequestLogger {
     }
 
     private fun truncate(body: String): String {
-        return if (MAX_BODY_LENGTH > body.length) body
-        else body.take(MAX_BODY_LENGTH) + "... [truncated]"
+        return if (MAX_BODY_LENGTH_KB > body.length) body
+        else body.take(MAX_BODY_LENGTH_KB) + "... [truncated]"
     }
 }
