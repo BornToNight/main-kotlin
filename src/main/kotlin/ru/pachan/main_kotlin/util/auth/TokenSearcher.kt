@@ -29,7 +29,7 @@ class TokenSearcher(
                 UNAUTHORIZED
             )).role.name
 
-        return roleName != ADMIN
+        return roleName == ADMIN
     }
 
     fun isOriginalUser(token: String, userId: Long): Boolean {
