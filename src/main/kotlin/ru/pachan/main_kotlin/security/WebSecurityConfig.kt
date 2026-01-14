@@ -37,6 +37,7 @@ class WebSecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it
+                    // TODO выглядит лишним
                     .requestMatchers("api/auth/**").hasAuthority(AuthorityEnum.VERIFIED_TOKEN.authority)
                     .requestMatchers("actuator/**").hasAuthority(AuthorityEnum.ACTUATOR_ADMIN.authority)
                     .requestMatchers("instances/**").hasAuthority(AuthorityEnum.ACTUATOR_ADMIN.authority)
