@@ -112,7 +112,6 @@ kubectl create secret generic my-secret --from-env-file=k8s.env
 ```
 7. Go to the project directories of **main, writer, reader, admin** services and run commands (build Jar and build Docker Image):
 ```
-gradle bootJar
 docker build -t username/serviceName:version .
 ```
   Example:

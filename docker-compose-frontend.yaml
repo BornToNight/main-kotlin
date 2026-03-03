@@ -7,6 +7,32 @@ x-logging: &default-logging
 
 services:
 
+  main-kotlin:
+    container_name: main-kotlin
+    <<: *default-logging
+    build: .
+    ports:
+      - "5001:5001"
+    depends_on:
+      - postgres
+      - logstash
+    environment:
+      SPRING_USER: ${SPRING_USER}
+      SPRING_PASSWORD: ${SPRING_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      GRAFANA_USER: ${GRAFANA_USER}
+      GRAFANA_PASSWORD: ${GRAFANA_PASSWORD}
+      LOGSTASH_HOST: ${LOGSTASH_HOST}
+      LOGSTASH_LOG_LEVEL: ${LOGSTASH_LOG_LEVEL}
+    networks:
+      - default
+      - elk
+      - monitoring
+
+
   postgres:
     container_name: postgres
     <<: *default-logging

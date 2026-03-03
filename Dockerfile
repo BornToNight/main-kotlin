@@ -1,5 +1,24 @@
-FROM openjdk:21
+# Stage 1: BUILD
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
-COPY build/libs/main.jar /main.jar
+WORKDIR /app
 
-ENTRYPOINT ["java", "-jar", "/main.jar"]
+COPY gradlew .
+COPY gradle gradle
+COPY gradle.properties .
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+COPY src src
+
+RUN chmod +x gradlew
+
+RUN ./gradlew bootJar -x test --no-daemon
+
+# Stage 2: RUN
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/build/libs/*.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
