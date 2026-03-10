@@ -40,15 +40,11 @@ services:
   prometheus:
     container_name: prometheus
     <<: *default-logging
-    build:
-      context: config/prometheus
-      args:
-        SPRING_USER: ${SPRING_USER}
-        SPRING_PASSWORD: ${SPRING_PASSWORD}
+    image: prom/prometheus:v3.3.1
     ports:
       - "9090:9090"
     volumes:
-      - prometheus:/prometheus
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       monitoring:
         aliases:

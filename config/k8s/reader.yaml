@@ -1,24 +1,27 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: writer-kotlin
+  name: reader
 spec:
   selector:
-    app: writer-kotlin
+    app: reader
   ports:
     - protocol: TCP
-      name: writer-kotlin
-      port: 5003
-      targetPort: 5003
+      name: reader
+      port: 5002
+      targetPort: 5002
+    - name: actuator
+      port: 5102
+      targetPort: 5102
 
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: writer-kotlin
+  name: reader
   labels:
-    app: writer-kotlin
+    app: reader
 spec:
   minReadySeconds: 10
   strategy:
@@ -26,31 +29,30 @@ spec:
       maxSurge: 1
       maxUnavailable: 1
     type: RollingUpdate
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: writer-kotlin
+      app: reader
   template:
     metadata:
       labels:
-        app: writer-kotlin
+        app: reader
     spec:
       containers:
-        - name: writer-kotlin
-          image: borntonight/writer-kotlin:1
+        - name: reader
+          image: borntonight/reader:1
+          imagePullPolicy: Never
           ports:
-            - containerPort: 5003
+            - containerPort: 5002
+              name: http-api
+            - containerPort: 5102
+              name: actuator
           env:
-            - name: SPRING_USER
+            - name: SERVICE_HOST
               valueFrom:
                 secretKeyRef:
                   name: my-secret
-                  key: SPRING_USER
-            - name: SPRING_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: my-secret
-                  key: SPRING_PASSWORD
+                  key: SERVICE_HOST_READER
             - name: SPRING_ADMIN_HOST
               valueFrom:
                 secretKeyRef:
@@ -86,26 +88,11 @@ spec:
                 secretKeyRef:
                   name: my-secret
                   key: POSTGRES_PASSWORD
-            - name: KAFKA_HOST
+            - name: GRPC_HOST
               valueFrom:
                 secretKeyRef:
                   name: my-secret
-                  key: KAFKA_HOST
-            - name: KAFKA_TOPIC
-              valueFrom:
-                secretKeyRef:
-                  name: my-secret
-                  key: KAFKA_TOPIC
-            - name: KAFKA_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: my-secret
-                  key: KAFKA_CLIENT_ID
-            - name: KAFKA_GROUP_ID
-              valueFrom:
-                secretKeyRef:
-                  name: my-secret
-                  key: KAFKA_GROUP_ID
+                  key: GRPC_HOST
             - name: LOGSTASH_HOST
               valueFrom:
                 secretKeyRef:

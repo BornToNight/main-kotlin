@@ -1,24 +1,8 @@
-# Stage 1: BUILD
-FROM eclipse-temurin:21-jdk-alpine AS builder
+FROM eclipse-temurin:21-jdk-alpine
 
-WORKDIR /app
+COPY build/libs/*.jar /tmp/
 
-COPY gradlew .
-COPY gradle gradle
-COPY gradle.properties .
-COPY build.gradle.kts .
-COPY settings.gradle.kts .
-COPY src src
-
-RUN chmod +x gradlew
-
-RUN ./gradlew bootJar -x test --no-daemon
-
-# Stage 2: RUN
-FROM eclipse-temurin:21-jre-alpine
-
-WORKDIR /app
-
-COPY --from=builder /app/build/libs/*.jar app.jar
+# Выбор самой последней версии
+RUN mv $(ls /tmp/*.jar | grep -v plain | sort -V | tail -1) app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

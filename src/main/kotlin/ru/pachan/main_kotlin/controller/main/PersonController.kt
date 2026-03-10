@@ -33,7 +33,7 @@ class PersonController(
     private val service: PersonService,
 ) {
 
-    private val log = LoggerFactory.getLogger(PersonController::class.java)
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     @Operation(summary = "Возвращение всех с фильтрацией")
     @GetMapping

@@ -1,9 +1,17 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
 scrape_configs:
-  - job_name: 'sample_monitoring'
+  - job_name: 'apps'
     scrape_interval: 5s
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'host.docker.internal:5001', 'host.docker.internal:5012', 'host.docker.internal:5003' ]
-    basic_auth:
-      username: ${SPRING_USER}
-      password: ${SPRING_PASSWORD}
+      - targets:
+          - 'host.docker.internal:5101'
+          - 'host.docker.internal:5102'
+          - 'host.docker.internal:5103'
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

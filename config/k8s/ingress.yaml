@@ -41,7 +41,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: admin-kotlin
+                name: admin
                 port:
                   number: 5004
     - host: pet.main
@@ -51,7 +51,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: main-kotlin
+                name: main
                 port:
                   number: 5001
 #    - http:
@@ -60,13 +60,13 @@ spec:
 #            pathType: Prefix
 #            backend:
 #              service:
-#                name: main-kotlin
+#                name: main
 #                port:
 #                  number: 5001
 #          - path: /api/auth
 #            pathType: Prefix
 #            backend:
 #              service:
-#                name: main-kotlin
+#                name: main
 #                port:
 #                  number: 5001

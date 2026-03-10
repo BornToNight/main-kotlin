@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: 1
       author: BornToNight
+      context: "test"
       changes:
         - sqlFile:
             path: db/changelog/1.0.0/1-1.sql

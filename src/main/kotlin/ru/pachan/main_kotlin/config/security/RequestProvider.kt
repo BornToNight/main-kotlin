@@ -1,4 +1,4 @@
-package ru.pachan.main_kotlin.security
+package ru.pachan.main_kotlin.config.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

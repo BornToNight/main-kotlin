@@ -6,15 +6,15 @@ import org.slf4j.MDC
 import org.springframework.http.HttpStatus
 import org.springframework.web.util.ContentCachingRequestWrapper
 import org.springframework.web.util.ContentCachingResponseWrapper
-import ru.pachan.main_kotlin.security.RequestProvider
+import ru.pachan.main_kotlin.config.security.RequestProvider
 import ru.pachan.main_kotlin.util.enums.MdcKeyEnum
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.*
 
 object RequestLogger {
 
-    private const val MAX_BODY_LENGTH_KB = 10 * 1024 // 10 KB
-    private val log = LoggerFactory.getLogger(RequestLogger::class.java)
+    private const val MAX_BODY_LENGTH_KB = 10 * 1024
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     fun writeSlf4jLog(
         requestWrapper: ContentCachingRequestWrapper,

@@ -42,9 +42,9 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: my-secret
-                  key: GF_SECURITY_ADMIN_USER
+                  key: GRAFANA_USER
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: my-secret
-                  key: GF_SECURITY_ADMIN_PASSWORD
+                  key: GRAFANA_PASSWORD

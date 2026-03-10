@@ -33,7 +33,7 @@ class CertificateGraphQlControllerTest {
 
         @DynamicPropertySource
         @JvmStatic
-        fun postgresqlProperties(registry: DynamicPropertyRegistry) {
+        fun properties(registry: DynamicPropertyRegistry) {
             registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl)
             registry.add("spring.datasource.password", postgreSQLContainer::getPassword)
         }

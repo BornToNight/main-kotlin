@@ -7,8 +7,8 @@ x-logging: &default-logging
 
 services:
 
-  main-kotlin:
-    container_name: main-kotlin
+  main:
+    container_name: main
     <<: *default-logging
     build: .
     ports:
@@ -17,8 +17,6 @@ services:
       - postgres
       - logstash
     environment:
-      SPRING_USER: ${SPRING_USER}
-      SPRING_PASSWORD: ${SPRING_PASSWORD}
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -66,19 +64,17 @@ services:
   prometheus:
     container_name: prometheus
     <<: *default-logging
-    build:
-      context: config/prometheus
-      args:
-        SPRING_USER: ${SPRING_USER}
-        SPRING_PASSWORD: ${SPRING_PASSWORD}
+    image: prom/prometheus:v3.3.1
     ports:
       - "9090:9090"
     volumes:
-      - prometheus:/prometheus
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       monitoring:
         aliases:
           - prometheus
+    depends_on:
+      - main
 
   zookeeper:
     container_name: zookeeper

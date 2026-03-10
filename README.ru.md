@@ -112,6 +112,9 @@ kubectl create secret generic my-secret --from-env-file=k8s.env
 ```
 7. Перейти в директорию проекта в **main, writer, reader, admin** сервисах и выполнить команды (build Jar и build Docker Image)
 ```
+.\gradlew build
+```
+```
 docker build -t username/serviceName:version .
 ```
   Пример
