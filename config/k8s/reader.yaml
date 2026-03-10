@@ -37,6 +37,10 @@ spec:
     metadata:
       labels:
         app: reader
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5102"
+        prometheus.io/path: "/actuator/prometheus"
     spec:
       containers:
         - name: reader
@@ -47,6 +51,26 @@ spec:
               name: http-api
             - containerPort: 5102
               name: actuator
+          livenessProbe:
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            httpGet:
+              path: /actuator/health/liveness
+              port: 5102
+              scheme: HTTP
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            httpGet:
+              path: /actuator/health/readiness
+              port: 5102
+              scheme: HTTP
+            timeoutSeconds: 10
+            failureThreshold: 1
+            successThreshold: 1
           env:
             - name: SERVICE_HOST
               valueFrom:

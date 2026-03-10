@@ -37,6 +37,10 @@ spec:
     metadata:
       labels:
         app: writer
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5103"
+        prometheus.io/path: "/actuator/prometheus"
     spec:
       containers:
         - name: writer
@@ -47,6 +51,26 @@ spec:
               name: http-api
             - containerPort: 5103
               name: actuator
+          livenessProbe:
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            httpGet:
+              path: /actuator/health/liveness
+              port: 5103
+              scheme: HTTP
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            httpGet:
+              path: /actuator/health/readiness
+              port: 5103
+              scheme: HTTP
+            timeoutSeconds: 10
+            failureThreshold: 1
+            successThreshold: 1
           env:
             - name: SERVICE_HOST
               valueFrom:
@@ -58,6 +82,16 @@ spec:
                 secretKeyRef:
                   name: my-secret
                   key: SPRING_ADMIN_HOST
+            - name: SPRING_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: SPRING_ADMIN_USER
+            - name: SPRING_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: SPRING_ADMIN_PASSWORD
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
