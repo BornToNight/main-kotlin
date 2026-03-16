@@ -1,33 +1,20 @@
 apiVersion: v1
-kind: PersistentVolume
+kind: ConfigMap
 metadata:
-  name: redis-claim0
-  labels:
-    type: local
-    app: redis
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 150Mi
-  accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: "/redis"
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: redis-claim0
-  labels:
-    app: redis
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Mi
+  name: redis-role-config
+data:
+  # appendonly - пишет операции на диск
+  primary.conf: |
+    bind 0.0.0.0
+    port 6379
+    appendonly yes
+    dir /redis/data
+  replica.conf: |
+    replicaof redis-0.redis 6379
+    bind 0.0.0.0
+    port 6379
+    appendonly yes
+    dir /redis/data
 
 ---
 
@@ -35,50 +22,107 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis
-  labels:
-    app: redis
 spec:
   ports:
     - port: 6379
-      targetPort: 6379
-      name: redis
+  clusterIP: None # headless service - не балансирует трафик, а дает прямые DNS имена подам
   selector:
     app: redis
 
 ---
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: redis
-  labels:
-    app: redis
 spec:
   selector:
     matchLabels:
       app: redis
-  strategy:
-    type: Recreate
+  serviceName: redis
+  replicas: 2
   template:
     metadata:
       labels:
         app: redis
     spec:
-      containers:
-        - name: redis
-          image: redis:7.4-rc-alpine
-          ports:
-            - containerPort: 6379
+      terminationGracePeriodSeconds: 10
+      initContainers: # Выполняется перед основным контейнером
+        - name: init-redis
+          image: redis:7.4-rc
           env:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: my-secret
                   key: REDIS_PASSWORD
+          command:
+            - bash
+            - "-c"
+            - |
+              set -ex
+              # Извлекаем порядковый номер из имени хоста (redis-0 -> 0, redis-1 -> 1)
+              # hostname в StatefulSet имеет формат: <statefulset-name>-<ordinal>
+              [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+              ordinal=${BASH_REMATCH[1]}
+              echo "ordinal ${ordinal}"
+              
+              # Копируем конфиги из config-map в пустую новую директорию
+              mkdir -p /redis/conf/
+              
+              # Выбираем правильную конфигурацию в зависимости от индекса:
+              # - под с индексом 0 становится мастером (primary)
+              # - все остальные поды становятся репликами (replica)
+              if [[ $ordinal -eq 0 ]]; then
+                cp /mnt/redis-configmap/primary.conf /redis/conf/redis.conf
+              else
+                cp /mnt/redis-configmap/replica.conf /redis/conf/redis.conf
+              fi
+              
+              # Выводим конфигурацию для отладки
+              cat /redis/conf/redis.conf
           volumeMounts:
-            - name: redis-claim0
-              mountPath: /redis
+            - name: redis-config-volume # Монтируем emptyDir для конфигов
+              mountPath: /redis/conf/
+            - name: redis-configmap-volume # Монтируем ConfigMap с конфигами
+              mountPath: /mnt/redis-configmap
+      # Основной контейнер с Redis сервером
+      containers:
+        - name: redis-container
+          image: redis:7.4-rc
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: REDIS_PASSWORD
+          # Запускаем redis-server с подготовленным конфигом
+          command: ["redis-server"]
+          args: ["/redis/conf/redis.conf"]
+          volumeMounts:
+            - name: redis-config-volume # Монтируем конфиг, подготовленный init-контейнером
+              mountPath: /redis/conf/
+            - name: redis-pvc  # Монтируем PersistentVolume для данных
+              mountPath: /redis/data
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+      # Общие volumes, доступные всем контейнерам в поде
       volumes:
-        - name: redis-claim0
-          persistentVolumeClaim:
-            claimName: redis-claim0
+        - name: redis-configmap-volume # Volume из ConfigMap с шаблонами конфигов
+          configMap:
+            name: redis-role-config
+        - name: redis-config-volume # EmptyDir для временной конфигурации (живет, пока жив под)
+          emptyDir: {}
+
+  # Шаблон для создания PersistentVolume для каждого пода
+  # Каждый под получит свой PVC с именем redis-pvc-<pod-name>
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-pvc
+      spec:
+        accessModes: [ "ReadWriteOnce" ] # Только один под может писать одновременно
+        resources:
+          requests:
+            storage: 100Mi # Запрашиваем 100Mi дискового пространства
