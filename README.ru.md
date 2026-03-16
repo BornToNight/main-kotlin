@@ -106,31 +106,35 @@ minikube addons enable ingress
 ```
 minikube addons enable dashboard
 ```
-6. Перейти в директорию проекта в **main** микросервисе и выполнить команду
+6. Включить metrics:
+```
+minikube addons enable metrics-server
+```
+7. Перейти в директорию проекта в **main** микросервисе и выполнить команду
 ```
 kubectl create secret generic my-secret --from-env-file=k8s.env
 ```
-7. Перейти в директорию проекта в **main, writer, reader, admin** сервисах и выполнить команды (build Jar и build Docker Image)
+8. Перейти в директорию проекта в **main, writer, reader, admin** сервисах и выполнить команды (build Jar и build Docker Image)
 ```
 .\gradlew build
 ```
 ```
 docker build -t username/serviceName:version .
 ```
-  Пример
+Пример
 ```
 docker build -t borntonight/main:1 .
 ```
-8. Push свои images микросервисов на Docker Hub или можно загрузить их в minikube с локального ПК с помощью команды
+9. Push свои images микросервисов на Docker Hub или можно загрузить их в minikube с локального ПК с помощью команды
 ```
 minikube image load borntonight/main:1
 ```
-9. Повторить 7 и 8 шаг для Grafana (**main** микросервис -> config/grafana)
-10. Загрузить конфиги в minikube с помощью команды
+10. Повторить 7 и 8 шаг для Grafana (**main** микросервис -> config/grafana)
+11. Загрузить конфиги в minikube с помощью команды
 ```
 kubectl apply -f .\config\k8s
 ```
-11. Вставить в **hosts** файл на своём ПК
+12. Вставить в **hosts** файл на своём ПК
 ```
 127.0.0.1 pet.grafana
 127.0.0.1 pet.prometheus
@@ -138,15 +142,15 @@ kubectl apply -f .\config\k8s
 127.0.0.1 pet.admin
 127.0.0.1 pet.main
 ```
-12. Выполнить команду для туннеля
+13. Выполнить команду для туннеля
 ```
 minikube tunnel
 ```
-13. Выполнить команду для открытия dashboard
+14. Выполнить команду для открытия dashboard
 ```
 minikube dashboard
 ```
-14. Теперь всё работает! (ВСЕ ЛОГИНЫ И ПАРОЛИ ТЫ НАЙДЁШЬ В **.env** файле в **main** микросервисе)
+15. Теперь всё работает! (ВСЕ ЛОГИНЫ И ПАРОЛИ ТЫ НАЙДЁШЬ В **.env** файле в **main** микросервисе)
 
 ### 7. Для вызова эндпоинтов можно использовать Postman
 1. Отправить POST запрос на http://localhost:5001/api/auth/generate / http://pet.main/api/auth/generate <br>

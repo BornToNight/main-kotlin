@@ -106,31 +106,39 @@ minikube addons enable ingress
 ```
 minikube addons enable dashboard
 ```
-6. Go to the **main** microservice directory and run the command:
+5. Enable dashboard:
+```
+minikube addons enable dashboard
+```
+6. Enable metrics:
+```
+minikube addons enable metrics-server
+```
+7. Go to the **main** microservice directory and run the command:
 ```
 kubectl create secret generic my-secret --from-env-file=k8s.env
 ```
-7. Go to the project directories of **main, writer, reader, admin** services and run commands (build Jar and build Docker Image):
+8. Go to the project directories of **main, writer, reader, admin** services and run commands (build Jar and build Docker Image):
 ```
 .\gradlew build
 ```
 ```
 docker build -t username/serviceName:version .
 ```
-  Example:
+Example:
 ```
 docker build -t borntonight/main:1 .
 ```
-8. Push your microservice images to Docker Hub or load them into minikube from your local machine using:
+9. Push your microservice images to Docker Hub or load them into minikube from your local machine using:
 ```
 minikube image load borntonight/main:1
 ```
-9. Repeat steps 7 and 8 for Grafana (**main** microservice -> config/grafana)
-10. Upload configurations to minikube using:
+10. Repeat steps 8 and 9 for Grafana (**main** microservice -> config/grafana)
+11. Upload configurations to minikube using:
 ```
 kubectl apply -f .\config\k8s
 ```
-11. Add to the **hosts** file on your machine:
+12. Add to the **hosts** file on your machine:
 ```
 127.0.0.1 pet.grafana
 127.0.0.1 pet.prometheus
@@ -138,15 +146,15 @@ kubectl apply -f .\config\k8s
 127.0.0.1 pet.admin
 127.0.0.1 pet.main
 ```
-12. Run the tunnel command:
+13. Run the tunnel command:
 ```
 minikube tunnel
 ```
-13. Run the command to open the dashboard:
+14. Run the command to open the dashboard:
 ```
 minikube dashboard
 ```
-14. Now everything works! (ALL LOGINS AND PASSWORDS CAN BE FOUND IN THE **.env** FILE IN THE **main** microservice)
+15. Now everything works! (ALL LOGINS AND PASSWORDS CAN BE FOUND IN THE **.env** FILE IN THE **main** microservice)
 
 ### 7. To call endpoints, you can use Postman
 1. Send a POST request to http://localhost:5001/api/auth/generate / http://pet.main/api/auth/generate <br>
