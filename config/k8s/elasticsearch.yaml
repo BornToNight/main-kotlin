@@ -39,6 +39,13 @@ spec:
           image: elasticsearch:8.15.0
           ports:
             - containerPort: 9200
+          resources:
+            requests:
+              memory: "170Mi"
+              cpu: "100m"
+            limits:
+              memory: "200Mi"
+              cpu: "150m"
           env:
             - name: ES_JAVA_OPTS
               value: "-Xms512m -Xmx512m"

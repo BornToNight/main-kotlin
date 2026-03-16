@@ -137,7 +137,7 @@ spec:
               cpu: "250m"
             limits:
               memory: "600Mi"
-              cpu: "500m"
+              cpu: "300m"
           livenessProbe:
             initialDelaySeconds: 90
             periodSeconds: 30

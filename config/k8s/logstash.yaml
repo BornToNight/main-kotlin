@@ -73,6 +73,13 @@ spec:
               name: logstash
             - containerPort: 5044
             - containerPort: 9600
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+            limits:
+              memory: "150Mi"
+              cpu: "150m"
           volumeMounts:
             - name: pipeline
               mountPath: /usr/share/logstash/pipeline/logstash.conf
