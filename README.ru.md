@@ -129,7 +129,7 @@ docker build -t borntonight/main:1 .
 ```
 minikube image load borntonight/main:1
 ```
-10. Повторить 7 и 8 шаг для Grafana (**main** микросервис -> config/grafana)
+10. Повторить 8 и 9 шаг для Grafana (**main** микросервис -> config/grafana)
 11. Загрузить конфиги в minikube с помощью команды
 ```
 kubectl apply -f .\config\k8s
