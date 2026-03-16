@@ -35,6 +35,13 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 5004
+          resources:
+            requests:
+              memory: "450Mi"
+              cpu: "200m"
+            limits:
+              memory: "500Mi"
+              cpu: "250m"
           env:
             - name: SPRING_ADMIN_USER
               valueFrom:

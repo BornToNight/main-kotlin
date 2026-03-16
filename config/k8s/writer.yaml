@@ -51,6 +51,13 @@ spec:
               name: http-api
             - containerPort: 5103
               name: actuator
+          resources:
+            requests:
+              memory: "450Mi"
+              cpu: "200m"
+            limits:
+              memory: "500Mi"
+              cpu: "250m"
           livenessProbe:
             initialDelaySeconds: 90
             periodSeconds: 30

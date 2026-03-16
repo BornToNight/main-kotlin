@@ -37,6 +37,13 @@ spec:
           ports:
             - containerPort: 3000
               name: grafana2
+          resources:
+            requests:
+              memory: "450Mi"
+              cpu: "200m"
+            limits:
+              memory: "500Mi"
+              cpu: "250m"
           env:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
