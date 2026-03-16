@@ -92,11 +92,11 @@ spec:
               name: postgresql
           resources:
             requests:
-              memory: "100Mi"
-              cpu: "100m"
+              memory: "200Mi"
+              cpu: "200m"
             limits:
-              memory: "150Mi"
-              cpu: "150m"
+              memory: "250Mi"
+              cpu: "250m"
           volumeMounts:
             - name: postgresql-claim0
               mountPath: /var/lib/postgresql/data

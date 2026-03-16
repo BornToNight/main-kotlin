@@ -39,11 +39,11 @@ spec:
             - containerPort: 9092
           resources:
             requests:
-              memory: "100Mi"
-              cpu: "100m"
+              memory: "450Mi"
+              cpu: "200m"
             limits:
-              memory: "150Mi"
-              cpu: "150m"
+              memory: "500Mi"
+              cpu: "250m"
           env:
             - name: KAFKA_BROKER_ID
               value: "1"

@@ -28,7 +28,7 @@ spec:
           type: Utilization
           # Целевое значение - 50% от requests.cpu (250m)
           # Если средняя нагрузка на все поды превысит 50% (125m), HPA начнет добавлять реплики
-          averageUtilization: 50
+          averageUtilization: 80
 
     # Можно добавить метрику по памяти для более точного масштабирования
     # - type: Resource
