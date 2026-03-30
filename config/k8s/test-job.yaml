@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-job
+spec:
+  # Сколько подов должно успешно завершиться (по умолчанию 1)
+  completions: 1
+
+  # Сколько подов может работать параллельно (по умолчанию 1)
+  parallelism: 1
+
+  # Максимальное время выполнения задачи в секундах (через 60 сек принудительно завершится)
+  activeDeadlineSeconds: 60
+
+  # Сколько раз перезапускать при ошибке (0 - не перезапускать, 3 - по умолчанию)
+  backoffLimit: 3
+
+  template:
+    spec:
+      # Политика перезапуска: Never - не перезапускать, OnFailure - перезапустить при ошибке
+      restartPolicy: Never
+      containers:
+        - name: test
+          image: alpine
+          command: ["echo", "Hello from Job"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

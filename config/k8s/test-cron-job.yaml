@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: test-cron
+spec:
+  # Расписание: каждую минуту (формат: минуты часы дни_месяца месяцы дни_недели)
+  schedule: "* * * * *"
+
+  # Часовой пояс (опционально, по умолчанию UTC)
+  timeZone: "Europe/Moscow"
+
+  # Приостановить выполнение (true - не запускать, false - запускать)
+  suspend: false
+
+  # Сколько хранить успешно выполненных задач (по умолчанию 3)
+  successfulJobsHistoryLimit: 3
+
+  # Сколько хранить неудачных задач (по умолчанию 1)
+  failedJobsHistoryLimit: 1
+
+  jobTemplate:
+    spec:
+      # Максимальное время выполнения задачи (5 минут)
+      activeDeadlineSeconds: 300
+
+      # Количество попыток при ошибке
+      backoffLimit: 3
+
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: test
+              image: alpine
+              command: ["/bin/sh", "-c", "echo Hello from CronJob at $(date)"]
+              resources:
+                requests:
+                  memory: "64Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "128Mi"
+                  cpu: "100m"
