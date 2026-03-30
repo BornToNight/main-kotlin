@@ -2,7 +2,6 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: main-hpa
-  namespace: default
 spec:
   # Масштабируемый объект - указываем на наш deployment main
   scaleTargetRef:
