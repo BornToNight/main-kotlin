@@ -29,7 +29,6 @@ class CertificateService(
 
     fun getOne(id: Long): Certificate {
         return repository.findByIdOrNull(id) ?: throw RequestException(OBJECT_NOT_FOUND.message, HttpStatus.NOT_FOUND)
-
     }
 
     fun createOne(certificate: Certificate): Certificate {
