@@ -1,3 +1,5 @@
+import jdk.tools.jlink.resources.plugins
+
 val kotlinVer: String by project // 2.1.0
 val jacksonKotlinVer: String by project // 2.18.2
 val springBootStarterVer: String by project // 3.4.2
@@ -16,17 +18,17 @@ val jpamodelgenVer: String by project // 6.4.4.Final
 val graphQlTestVer: String by project // 1.3.2
 val testcontainersJunitVer: String by project // 1.20.0
 val logstashEncoderVer: String by project // 8.0
-val shedlockVer: String by project // 5.15.1
+val shedLockVer: String by project // 5.15.1
 val mapStructVer: String by project // 1.6.3
 val resilience4jVer: String by project // 2.2.0
 
 plugins {
-	kotlin("jvm") version "2.1.0"
-	kotlin("plugin.spring") version "2.1.0"
-	kotlin("plugin.jpa") version "2.1.0"
-	// EXPLAIN_V для генерации классов для спецификации
-	kotlin("kapt") version "2.1.0"
-	id("org.springframework.boot") version "3.4.2"
+    kotlin("jvm") version "2.1.0"
+    kotlin("plugin.spring") version "2.1.0"
+    kotlin("plugin.jpa") version "2.1.0"
+    // EXPLAIN_V для генерации классов для спецификации
+    kotlin("kapt") version "2.1.0"
+    id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
