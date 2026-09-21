@@ -88,12 +88,19 @@ management:
       probes:
           enabled: true
       group:
-        liveness:
-          include: "livenessState,ping,databaseLiveness"
+        readiness: # elasticsearch можно настроить как кастомный индикатор (сейчас не работает, т.к. нет dependency из-за того, что logstash сам шлёт)
+          include:
+            - "readinessState"
+            - "ping"
+            - "db"
+            - "redis"
           show-components: always
           show-details: always
-        readiness:
-          include: "readinessState,ping,db,redis" # elasticsearch можно настроить как кастомный индикатор (сейчас не работает, т.к. нет dependency из-за того, что logstash сам шлёт)
+        liveness:
+          include:
+            - "livenessState"
+            - "ping"
+            - "databaseLiveness"
           show-components: always
           show-details: always
   info:
