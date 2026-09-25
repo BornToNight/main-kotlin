@@ -58,18 +58,28 @@ spec:
             limits:
               memory: "500Mi"
               cpu: "250m"
-          readinessProbe:
-            initialDelaySeconds: 15
+          startupProbe:
+            initialDelaySeconds: 10
             httpGet:
               path: /actuator/health/readiness
               port: 5103
               scheme: HTTP
-            periodSeconds: 15
-            timeoutSeconds: 10
-            failureThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 18 # 18*10 = 3 минуты
+            successThreshold: 1
+          readinessProbe:
+            #            initialDelaySeconds: 30 EXPLAIN_V не надо, т.к. есть startupProbe
+            httpGet:
+              path: /actuator/health/readiness
+              port: 5103
+              scheme: HTTP
+            periodSeconds: 8
+            timeoutSeconds: 5
+            failureThreshold: 3
             successThreshold: 1
           livenessProbe:
-            initialDelaySeconds: 90
+            #            initialDelaySeconds: 90 EXPLAIN_V не надо, т.к. есть startupProbe
             httpGet:
               path: /actuator/health/liveness
               port: 5103
